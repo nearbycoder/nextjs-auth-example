@@ -43,7 +43,6 @@ const typeDefs = gql`
   type User {
     id: String
     email: String
-    tasks: [Task]
   }
 
   type Mutation {
@@ -60,6 +59,7 @@ const typeDefs = gql`
 
   type Query {
     viewer: User
+    tasks: [Task]
   }
 `;
 
@@ -122,7 +122,9 @@ const resolvers = {
         },
       });
 
-      return prisma.$transaction([deleteSubtasks, deleteTask]);
+      await prisma.$transaction([deleteSubtasks, deleteTask]);
+
+      return task;
     },
     async createSubtask(parent, { taskId, ...args }, context) {
       const task = await prisma.task.findUnique({
@@ -150,12 +152,10 @@ const resolvers = {
     viewer(parent, args, context) {
       return context?.user;
     },
-  },
-  User: {
-    async tasks(parent, args, context) {
+    tasks(parent, args, context) {
       return context.prisma.user
         .findUnique({
-          where: { id: parent?.id },
+          where: { id: context?.user?.id },
         })
         .tasks();
     },
