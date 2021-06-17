@@ -38,11 +38,14 @@ const server = new ApolloServer({
       user,
     };
   },
-  playground: {
-    settings: {
-      'request.credentials': 'include',
-    },
-  },
+  playground:
+    process.env.NODE_ENV === 'production'
+      ? false
+      : {
+          settings: {
+            'request.credentials': 'include',
+          },
+        },
 });
 
 const handler = server.createHandler({
