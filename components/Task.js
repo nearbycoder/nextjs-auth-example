@@ -25,11 +25,9 @@ export default function Task({ task }) {
       className="relative bg-white py-5 px-4 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
       <div className="flex justify-between space-x-3">
         <div className="min-w-0 flex-1">
-          <a href="#" className="block focus:outline-none">
-            <p className="text-sm font-medium text-gray-900 truncate">
-              {task.name}
-            </p>
-          </a>
+          <p className="text-sm font-medium text-gray-900 truncate">
+            {task.name}
+          </p>
         </div>
         <button
           type="button"
