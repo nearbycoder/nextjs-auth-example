@@ -5,6 +5,7 @@ import { Formik, Form, Field } from 'formik';
 import Task from '/components/Task';
 import { useState } from 'react';
 import * as Yup from 'yup';
+import { XIcon } from '@heroicons/react/outline';
 
 const TASKS = gql`
   query Tasks {
@@ -62,7 +63,6 @@ function TaskForm({
       initialValues={task}
       validationSchema={CreateTaskSchema}
       onSubmit={async (values, { resetForm }) => {
-        console.log(values);
         let updatedTask;
         if (task.id) {
           updatedTask = await mutation({
@@ -82,14 +82,29 @@ function TaskForm({
           closeNewTask();
         }
       }}>
-      {({ errors, touched }) => (
+      {({ errors, touched, resetForm }) => (
         <Form>
           <div className="shadow sm:rounded-md sm:overflow-hidden">
-            <div className="px-4 pt-5">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
-                New Task
-              </h3>
-              <p className="mt-1 text-sm text-gray-500">Creating a new task</p>
+            <div className="flex justify-between">
+              <div className="px-4 pt-5">
+                <h3 className="text-lg leading-6 font-medium text-gray-900">
+                  New Task
+                </h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Creating a new task
+                </p>
+              </div>
+              <div className="px-4 pt-5">
+                <button
+                  onClick={() => {
+                    closeNewTask();
+                    resetForm();
+                  }}
+                  type="button"
+                  className="inline-flex items-center px-1 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <XIcon className="h-6 w-6 text-gray-700" aria-hidden="true" />
+                </button>
+              </div>
             </div>
             <div className="px-4 bg-white space-y-6 sm:p-6">
               <div className="grid grid-cols-3 gap-6">
@@ -97,7 +112,12 @@ function TaskForm({
                   <label
                     htmlFor="name"
                     className="block text-sm font-medium text-gray-700">
-                    Name
+                    Name{' '}
+                    {errors.name && touched.name ? (
+                      <span className="text-sm text-red-600">
+                        {errors.name}
+                      </span>
+                    ) : null}
                   </label>
                   <div className="mt-1 flex rounded-md shadow-sm">
                     <Field
@@ -110,12 +130,16 @@ function TaskForm({
                   </div>
                 </div>
               </div>
-
               <div>
                 <label
                   htmlFor="description"
                   className="block text-sm font-medium text-gray-700">
-                  Description
+                  Description{' '}
+                  {errors.description && touched.description ? (
+                    <span className="text-sm text-red-600">
+                      {errors.description}
+                    </span>
+                  ) : null}
                 </label>
                 <div className="mt-1">
                   <Field
@@ -137,11 +161,6 @@ function TaskForm({
               </button>
             </div>
           </div>
-          {errors.name && touched.name ? <div>{errors.name}</div> : null}
-
-          {errors.description && touched.description ? (
-            <div>{errors.description}</div>
-          ) : null}
         </Form>
       )}
     </Formik>
