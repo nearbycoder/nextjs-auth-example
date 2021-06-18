@@ -157,7 +157,13 @@ const resolvers = {
         .findUnique({
           where: { id: context?.user?.id },
         })
-        .tasks();
+        .tasks({
+          orderBy: [
+            {
+              createdAt: 'desc',
+            },
+          ],
+        });
     },
   },
   Task: {
