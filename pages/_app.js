@@ -52,7 +52,9 @@ function MyApp({ Component, pageProps }) {
                     {/* Logo section */}
                     <div className="flex items-center px-2 lg:px-0 xl:w-64">
                       <div className="flex-shrink-0">
-                        <img
+                        <Image
+                          width="32px"
+                          height="32px"
                           className="h-8 w-auto"
                           src="https://tailwindui.com/img/logos/workflow-mark-indigo-300.svg"
                           alt="Workflow"
