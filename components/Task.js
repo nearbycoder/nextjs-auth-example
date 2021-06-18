@@ -1,22 +1,6 @@
 import { gql, useMutation } from '@apollo/client';
 import { useState } from 'react';
-
-const UPDATE_TASK = gql`
-  mutation UpdateTask($id: String!, $name: String!, $description: String!) {
-    updateTask(id: $id, name: $name, description: $description) {
-      id
-      name
-      description
-      createdAt
-      updatedAt
-      completedAt
-      subtasks {
-        id
-        name
-      }
-    }
-  }
-`;
+import TaskForm from './TaskForm';
 
 const DELETE_TASK = gql`
   mutation DeleteTask($id: String!) {
@@ -30,35 +14,10 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-// function Task({ task }) {
-//   return (
-//     <li style={{ listStyle: 'none', margin: '0', padding: '0' }} key={task.id}>
-//       <h3>{task.name}</h3>
-//       <p>{task.description}</p>
-//       {showEdit && (
-//         <TaskForm
-//           mutation={updateTask}
-//           mutationKey="updateTask"
-//           edit
-//           setShowEdit={setShowEdit}
-//           task={task}
-//         />
-//       )}
-//       <button
-//         onClick={() => {
-//           setShowEdit(true);
-//         }}>
-//         Edit
-//       </button>
-//       <button onClick={() => {}}>Delete</button>
-//     </li>
-//   );
-// }
-
 export default function Task({ task }) {
   const [deleteTask] = useMutation(DELETE_TASK);
   const [showEdit, setShowEdit] = useState(false);
-  const [updateTask] = useMutation(UPDATE_TASK);
+  const [showUpdateTask, setShowUpdateTask] = useState(false);
 
   return (
     <li
@@ -72,9 +31,9 @@ export default function Task({ task }) {
             </p>
           </a>
         </div>
-
         <button
           type="button"
+          onClick={() => setShowUpdateTask(!showUpdateTask)}
           className="inline-flex items-center px-2 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
           Edit
         </button>
@@ -101,6 +60,14 @@ export default function Task({ task }) {
       <div className="mt-1">
         <p className="line-clamp-2 text-sm text-gray-600">{task.description}</p>
       </div>
+      {showUpdateTask && (
+        <TaskForm
+          title=""
+          task={task}
+          closeNewTask={() => setShowUpdateTask(false)}
+          mutationKey="updateTask"
+        />
+      )}
     </li>
   );
 }
